@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cricket Lovers | Lucknow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --primary: #00ff88;
+      --secondary: #0066ff;
+      --accent: #ff6b35;
+      --gold: #ffd700;
+      --dark: #020b18;
+      --dark2: #041123;
+      --dark3: #061830;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.1);
+      --text: #e8f4fd;
+      --text-dim: rgba(232,244,253,0.6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
+
+    /* ─── Canvas / Particles ─── */
+    #hero-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(2,11,24,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: all .3s;
+    }
+
+    nav.scrolled {
+      padding: 10px 48px;
+      background: rgba(2,11,24,0.95);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color .3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--primary);
+      transition: width .3s;
+    }
+
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--primary), #00cc66);
+      color: #000 !important;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600 !important;
+      -webkit-text-fill-color: #000 !important;
+    }
+
+    .nav-cta::after { display: none !important; }
+
+    /* ─── Hero ─── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,102,255,0.15) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,255,136,0.08) 0%, transparent 60%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.3);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 24px;
+      animation: fadeInDown .8s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+      animation: fadeInUp .8s ease .1s both;
+    }
+
+    .hero-title .line1 {
+      display: block;
+      background: linear-gradient(135deg, #fff 0%, #aad4f5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      margin: 20px 0 40px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      animation: fadeInUp .8s ease .2s both;
+    }
+
+    .hero-sub span { color: var(--gold); font-weight: 600; }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp .8s ease .3s both;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #00aaff);
+      color: #000;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: transform .3s, box-shadow .3s;
+      box-shadow: 0 0 30px rgba(0,255,136,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 50px rgba(0,255,136,0.5);
+    }
+
+    .btn-ghost {
+      background: var(--glass);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all .3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+
+    .hero-scroll span {
+      display: block;
+      width: 24px; height: 40px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .hero-scroll span::after {
+      content: '';
+      position: absolute;
+      width: 4px; height: 8px;
+      background: var(--primary);
+      border-radius: 2px;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      animation: scrollDot 2s infinite;
+    }
+
+    /* ─── Stats Bar ─── */
+    .stats-bar {
+      position: relative;
+      z-index: 2;
+      background: rgba(4,17,35,0.8);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 28px 48px;
+    }
+
+    .stats-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .stat-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 10%;
+      height: 80%; width: 1px;
+      background: var(--glass-border);
+    }
+
+    .stat-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+
+    /* ─── Section shared ─── */
+    section {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-desc {
+      color: var(--text-dim);
+      font-size: .95rem;
+      margin-top: 12px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ─── About ─── */
+    #about {
+      padding: 120px 48px;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%);
+    }
+
+    .about-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+      height: 420px;
+    }
+
+    .cricket-field {
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1a5c2a 0%, #0d3d1a 50%, #082b12 100%);
+      border: 3px solid rgba(255,255,255,0.1);
+      position: relative;
+      margin: auto;
+      box-shadow: 0 0 80px rgba(0,255,136,0.15), 0 0 40px rgba(0,255,136,0.1) inset;
+      animation: fieldPulse 4s ease-in-out infinite;
+    }
+
+    .cricket-field::before {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .cricket-field::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 15%;
+      width: 70%; height: 2px;
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-50%);
+    }
+
+    .pitch {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 90px;
+      background: rgba(210,180,140,0.4);
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .ball-3d {
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff6b6b, #cc0000 50%, #8b0000);
+      box-shadow: 0 0 30px rgba(255,50,50,0.5), 4px 4px 12px rgba(0,0,0,0.5);
+      animation: ballFloat 3s ease-in-out infinite;
+    }
+
+    .ball-3d::before {
+      content: '';
+      position: absolute;
+      top: 20%; left: 10%;
+      width: 80%; height: 60%;
+      border: 1.5px solid rgba(255,200,200,0.3);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
+
+    .bat-3d {
+      position: absolute;
+      bottom: 10px; left: -10px;
+      width: 20px; height: 140px;
+      background: linear-gradient(180deg, #d4a056, #8b6914);
+      border-radius: 4px 4px 10px 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      transform: rotate(25deg);
+      animation: batSwing 4s ease-in-out infinite;
+    }
+
+    .bat-3d::before {
+      content: '';
+      position: absolute;
+      top: -30px; left: -8px;
+      width: 36px; height: 40px;
+      background: linear-gradient(180deg, #c8913e, #a67428);
+      border-radius: 6px 6px 0 0;
+    }
+
+    .float-stat {
+      position: absolute;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 14px 20px;
+      animation: floatCard 3s ease-in-out infinite;
+    }
+
+    .float-stat:nth-child(3) { top: 30px; right: -30px; animation-delay: .5s; }
+    .float-stat:nth-child(4) { bottom: 60px; right: -20px; animation-delay: 1s; }
+    .float-stat:nth-child(5) { bottom: 20px; left: -20px; animation-delay: 1.5s; }
+
+    .float-stat-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .float-stat-text { font-size: .7rem; color: var(--text-dim); letter-spacing: 1px; }
+
+    .about-text h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .about-text h2 span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .about-text p {
+      color: var(--text-dim);
+      line-height: 1.8;
+      margin-bottom: 16px;
+      font-size: .95rem;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .tag {
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(0,255,136,0.2);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Team Section ─── */
+    #team {
+      padding: 120px 48px;
+      background: var(--dark2);
+    }
+
+    .team-search {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .team-search input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: 12px 28px;
+      color: var(--text);
+      font-size: .95rem;
+      font-family: 'Inter', sans-serif;
+      width: 360px;
+      outline: none;
+      transition: all .3s;
+    }
+
+    .team-search input::placeholder { color: var(--text-dim); }
+
+    .team-search input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(0,255,136,0.15);
+      background: rgba(0,255,136,0.04);
+    }
+
+    .team-filter {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text-dim);
+      padding: 8px 22px;
+      border-radius: 30px;
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .3s;
+      letter-spacing: 1px;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(0,255,136,0.1);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .team-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    /* ─── Player Card (3D Flip) ─── */
+    .player-card {
+      perspective: 1000px;
+      height: 320px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+
+    .player-card:hover .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(145deg, var(--dark3), var(--dark2));
+      border: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px;
+      transition: box-shadow .3s;
+    }
+
+    .player-card:hover .card-front {
+      box-shadow: 0 20px 60px rgba(0,255,136,0.15);
+    }
+
+    .card-front .glow-ring {
+      position: absolute;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, transparent 30%, rgba(0,255,136,0.2) 100%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .player-card:hover .glow-ring { opacity: 1; }
+
+    .avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #000;
+      margin-bottom: 16px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary), var(--secondary), var(--primary));
+      z-index: -1;
+      animation: spin 4s linear infinite;
+    }
+
+    .avatar-inner {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #000;
+      z-index: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .avatar-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .player-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .player-role {
+      font-size: .75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .player-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .badge-bat { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+    .badge-bowl { background: rgba(255,107,53,0.15); color: #ff8c42; border: 1px solid rgba(255,107,53,0.3); }
+    .badge-all { background: rgba(0,255,136,0.1); color: var(--primary); border: 1px solid rgba(0,255,136,0.3); }
+    .badge-wk { background: rgba(0,102,255,0.15); color: #4d9eff; border: 1px solid rgba(0,102,255,0.3); }
+    .badge-pro { background: rgba(138,43,226,0.15); color: #b469ff; border: 1px solid rgba(138,43,226,0.3); }
+    .badge-cap { background: rgba(255,215,0,0.2); color: var(--gold); border: 1px solid var(--gold); }
+
+    .card-back {
+      background: linear-gradient(145deg, #061830, #041123);
+      border: 1px solid rgba(0,255,136,0.2);
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px;
+      gap: 14px;
+    }
+
+    .card-back h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+    }
+
+    .back-stats {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .back-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .back-stat-label {
+      font-size: .75rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .back-stat-val {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .back-desc {
+      font-size: .78rem;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ─── Highlights / Features ─── */
+    #highlights {
+      padding: 120px 48px;
+      background: linear-gradient(180deg, var(--dark2) 0%, var(--dark) 100%);
+      overflow: hidden;
+    }
+
+    .highlights-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .highlight-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      transition: all .4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity .4s;
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0,255,136,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,255,136,0.08);
+    }
+
+    .highlight-card:hover::before { opacity: 1; }
+
+    .highlight-icon {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .highlight-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .highlight-card p {
+      color: var(--text-dim);
+      font-size: .9rem;
+      line-height: 1.7;
+    }
+
+    /* ─── Captain Spotlight ─── */
+    #captain {
+      padding: 120px 48px;
+      background: var(--dark3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #captain::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,102,255,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .captain-card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(0,102,255,0.1), rgba(0,255,136,0.05));
+      border: 1px solid rgba(0,102,255,0.3);
+      border-radius: 32px;
+      padding: 56px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .captain-card::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,255,136,0.05) 0%, transparent 70%);
+    }
+
+    .captain-avatar {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: #000;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 0 60px rgba(0,255,136,0.3);
+    }
+
+    .captain-avatar::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) 0deg, var(--secondary) 180deg, var(--primary) 360deg);
+      z-index: -1;
+      animation: spin 3s linear infinite;
+    }
+
+    .captain-crown {
+      position: absolute;
+      top: -18px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.6rem;
+    }
+
+    .captain-info .label {
+      font-size: .75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .captain-info h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      margin: 8px 0 6px;
+    }
+
+    .captain-title {
+      font-size: .95rem;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    .captain-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .cap-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .cap-stat-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .cap-stat-label {
+      font-size: .7rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ─── Gallery ─── */
+    #gallery {
+      padding: 120px 48px;
+      background: var(--dark);
+    }
+
+    .gallery-marquee {
+      overflow: hidden;
+      margin: 0 -48px;
+    }
+
+    .gallery-track {
+      display: flex;
+      gap: 20px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+
+    .gallery-track:hover { animation-play-state: paused; }
+
+    .gallery-item {
+      width: 280px;
+      height: 200px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--dark3), var(--dark2));
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+      transition: all .3s;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item:hover {
+      border-color: rgba(0,255,136,0.3);
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .gallery-item .gallery-icon { font-size: 3rem; }
+    .gallery-item .gallery-text {
+      font-size: .85rem;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .gallery-item .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,102,255,0.2), rgba(0,255,136,0.1));
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    /* ─── CTA ─── */
+    #cta {
+      padding: 120px 48px;
+      background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,102,255,0.08) 100%);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      text-align: center;
+    }
+
+    #cta h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    #cta p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto 40px;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      position: relative;
+      z-index: 2;
+      background: var(--dark2);
+      border-top: 1px solid var(--glass-border);
+      padding: 56px 48px 32px;
+    }
+
+    .footer-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand .nav-logo { font-size: 1.6rem; display: inline-block; margin-bottom: 16px; }
+
+    .footer-brand p {
+      color: var(--text-dim);
+      font-size: .9rem;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+
+    .footer-col h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-col ul li a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: .9rem;
+      transition: color .3s;
+    }
+
+    .footer-col ul li a:hover { color: var(--primary); }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-size: .8rem;
+      color: var(--text-dim);
+    }
+
+    .footer-bottom span { color: var(--primary); }
+
+    /* ─── Animations ─── */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: .6; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-12px); }
+    }
+
+    @keyframes scrollDot {
+      0% { top: 6px; opacity: 1; }
+      100% { top: 22px; opacity: 0; }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes ballFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(15deg); }
+    }
+
+    @keyframes batSwing {
+      0%, 100% { transform: rotate(25deg); }
+      50% { transform: rotate(35deg); }
+    }
+
+    @keyframes fieldPulse {
+      0%, 100% { box-shadow: 0 0 80px rgba(0,255,136,0.15), 0 0 40px rgba(0,255,136,0.1) inset; }
+      50% { box-shadow: 0 0 120px rgba(0,255,136,0.25), 0 0 60px rgba(0,255,136,0.15) inset; }
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ─── Scroll reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all .8s cubic-bezier(.4,0,.2,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 24px; }
+      .nav-links { display: none; }
+      #about, #team, #highlights, #captain, #gallery, #cta { padding: 80px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { height: 280px; }
+      .cricket-field { width: 240px; height: 240px; }
+      .captain-card { grid-template-columns: 1fr; text-align: center; gap: 32px; padding: 40px 28px; }
+      .captain-avatar { margin: 0 auto; }
+      .captain-stats { grid-template-columns: repeat(3, 1fr); }
+      .highlights-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Three.js Canvas -->
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-logo">🏏 CL</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#team">Squad</a></li>
+      <li><a href="#captain">Captain</a></li>
+      <li><a href="#highlights">Highlights</a></li>
+      <li><a href="#cta" class="nav-cta">Join Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-bg-gradient"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🏏 Lucknow's Premier Cricket Club</div>
+      <h1 class="hero-title">
+        <span class="line1">CRICKET</span>
+        <span class="line2">LOVERS</span>
+      </h1>
+      <p class="hero-sub">Where Passion Meets <span>Excellence</span> — Est. Lucknow</p>
+      <div class="hero-btns">
+        <a href="#team" class="btn-primary">Meet the Squad</a>
+        <a href="#about" class="btn-ghost">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-scroll"><span></span></div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num" data-count="110">0</span>
+        <div class="stat-label">Team Members</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="50">0</span>
+        <div class="stat-label">Matches Played</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="10">0</span>
+        <div class="stat-label">Pro Players</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">LKO</span>
+        <div class="stat-label">Home City</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="cricket-field">
+          <div class="pitch"></div>
+        </div>
+        <div class="ball-3d"></div>
+        <div class="bat-3d"></div>
+        <div class="float-stat">
+          <div class="float-stat-num">Pro</div>
+          <div class="float-stat-text">Certified Players</div>
+        </div>
+        <div class="float-stat">
+          <div class="float-stat-num">🏆</div>
+          <div class="float-stat-text">Champions</div>
+        </div>
+        <div class="float-stat">
+          <div class="float-stat-num">LKO</div>
+          <div class="float-stat-text">Lucknow, UP</div>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <h2>We Don't Just<br /><span>Play Cricket</span></h2>
+        <p>Cricket Lovers is Lucknow's most passionate cricket club, built on the foundation of camaraderie, competitive spirit, and an undying love for the gentleman's game.</p>
+        <p>With over 110 registered players ranging from explosive hard hitters to disciplined accumulators, and lightning-fast bowlers to crafty economists — our squad has it all.</p>
+        <p>Every match is a celebration of skill, teamwork, and the relentless pursuit of excellence on the pitch.</p>
+        <div class="about-tags">
+          <span class="tag">Lucknow</span>
+          <span class="tag">110+ Players</span>
+          <span class="tag">CricHeroes Verified</span>
+          <span class="tag">All Formats</span>
+          <span class="tag">Pro Certified</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team">
+    <div class="section-header reveal">
+      <div class="section-tag">The Squad</div>
+      <h2 class="section-title">Meet Our <span>Warriors</span></h2>
+      <p class="section-desc">A diverse roster of batting maestros, bowling wizards, and complete all-rounders.</p>
+    </div>
+
+    <div class="team-search reveal">
+      <input type="text" id="player-search" placeholder="🔍  Search player..." autocomplete="off" />
+    </div>
+
+    <div class="team-filter reveal">
+      <button class="filter-btn active" data-filter="all">All Players</button>
+      <button class="filter-btn" data-filter="bat">Batters</button>
+      <button class="filter-btn" data-filter="bowl">Bowlers</button>
+      <button class="filter-btn" data-filter="all-rounder">All-Rounders</button>
+      <button class="filter-btn" data-filter="pro">Pro</button>
+    </div>
+
+    <div class="team-grid" id="team-grid"></div>
+  </section>
+
+  <!-- Captain Spotlight -->
+  <section id="captain">
+    <div class="section-header reveal">
+      <div class="section-tag">Leadership</div>
+      <h2 class="section-title">Captain <span>Spotlight</span></h2>
+    </div>
+    <div class="captain-card reveal">
+      <div class="captain-avatar">
+        NV
+        <div class="captain-crown">👑</div>
+      </div>
+      <div class="captain-info">
+        <div class="label">Team Captain</div>
+        <h2>Nitin Verma</h2>
+        <p class="captain-title">Wicket-keeper Batter · Hard Hitter · Pro Player</p>
+        <div class="captain-stats">
+          <div class="cap-stat">
+            <div class="cap-stat-num">⚡</div>
+            <div class="cap-stat-label">Hard Hitter</div>
+          </div>
+          <div class="cap-stat">
+            <div class="cap-stat-num">🧤</div>
+            <div class="cap-stat-label">WK-Batter</div>
+          </div>
+          <div class="cap-stat">
+            <div class="cap-stat-num">⭐</div>
+            <div class="cap-stat-label">Pro Certified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights -->
+  <section id="highlights">
+    <div class="section-header reveal">
+      <div class="section-tag">Why We're Special</div>
+      <h2 class="section-title">Club <span>Highlights</span></h2>
+    </div>
+    <div class="highlights-grid">
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">🔥</span>
+        <h3>Explosive Batting</h3>
+        <p>From destructors who can clear any boundary to classical batters who build innings brick by brick — our batting lineup has it all covered.</p>
+      </div>
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">🌀</span>
+        <h3>Lethal Bowling</h3>
+        <p>Our wildcard bowlers keep opposition guessing while our economy bowlers control the game. Every over is a battle won.</p>
+      </div>
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">🤝</span>
+        <h3>Brotherhood First</h3>
+        <p>Beyond the cricket field, we're a family. The bond between our players is what makes us more than just a team — it's a community.</p>
+      </div>
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">📊</span>
+        <h3>CricHeroes Verified</h3>
+        <p>All our players are verified on CricHeroes with detailed stats, performance tracking, and professional profiles.</p>
+      </div>
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">🏙️</span>
+        <h3>Lucknow Proud</h3>
+        <p>Representing the Nawabi spirit of Lucknow — grace, elegance, and tenacity on every pitch we play across the city.</p>
+      </div>
+      <div class="highlight-card reveal">
+        <span class="highlight-icon">🌟</span>
+        <h3>110+ Strong Squad</h3>
+        <p>One of the largest cricket clubs in Lucknow, with 110+ registered members across all skill levels and playing styles.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery (Visual Cards) -->
+  <section id="gallery">
+    <div class="section-header reveal">
+      <div class="section-tag">Moments</div>
+      <h2 class="section-title">On The <span>Field</span></h2>
+    </div>
+    <div class="gallery-marquee">
+      <div class="gallery-track" id="gallery-track"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="reveal">
+      <h2>Ready to <span style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Join the Team?</span></h2>
+      <p>We're always looking for passionate cricketers who want to take their game to the next level. Find us on CricHeroes!</p>
+      <div class="hero-btns">
+        <a href="https://cricheroes.com/team-profile/6783894/cricket-lovers/members" target="_blank" class="btn-primary">View on CricHeroes</a>
+        <a href="#team" class="btn-ghost">Browse Squad</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">🏏 Cricket Lovers</div>
+        <p>Lucknow's premier cricket club. Passionate about the game, united by the sport, and driven by the love of cricket.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#team">Squad</a></li>
+          <li><a href="#captain">Captain</a></li>
+          <li><a href="#highlights">Highlights</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="https://cricheroes.com/team-profile/6783894/cricket-lovers/members" target="_blank">CricHeroes Profile</a></li>
+          <li><a href="#cta">Join the Team</a></li>
+          <li><a href="#about">Our Story</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 <span>Cricket Lovers</span> · Lucknow, India</p>
+      <p>Built with ❤️ for the love of cricket</p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Three.js Particle Field ───────────────────────────────────────────────
+    const canvas = document.getElementById('hero-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    // Particles
+    const particleCount = 2000;
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 100;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+
+      const t = Math.random();
+      if (t < 0.5) {
+        colors[i * 3] = 0; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 0.53;
+      } else {
+        colors[i * 3] = 0; colors[i * 3 + 1] = 0.4; colors[i * 3 + 2] = 1;
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 0.15,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.7,
+      sizeAttenuation: true,
+    });
+
+    const particles = new THREE.Points(geo, mat);
+    scene.add(particles);
+
+    // 3D Cricket Ball
+    const ballGeo = new THREE.SphereGeometry(3, 32, 32);
+    const ballMat = new THREE.MeshPhongMaterial({
+      color: 0xcc0000,
+      specular: 0xff6666,
+      shininess: 80,
+      transparent: true,
+      opacity: 0.15,
+    });
+    const ball = new THREE.Mesh(ballGeo, ballMat);
+    ball.position.set(14, 5, -5);
+    scene.add(ball);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0x004466, 2);
+    scene.add(ambient);
+    const pointLight = new THREE.PointLight(0x00ff88, 3, 50);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+    const pointLight2 = new THREE.PointLight(0x0066ff, 2, 50);
+    pointLight2.position.set(-10, -5, 5);
+    scene.add(pointLight2);
+
+    // Mouse parallax
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+    });
+
+    // Animate
+    let t = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      t += 0.005;
+      particles.rotation.y = t * 0.1 + mouseX;
+      particles.rotation.x = mouseY * 0.5;
+      ball.rotation.y = t * 0.5;
+      ball.rotation.z = t * 0.3;
+      ball.position.y = 5 + Math.sin(t * 0.8) * 2;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ─── Nav scroll effect ─────────────────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ─── Player Data ───────────────────────────────────────────────────────────
+    const B = 'https://media.cricheroes.in/user_profile/';
+    const DP = 'https://media.cricheroes.in/default/user_profile.png';
+
+    // bat: batting style, bowl: bowling style, pro: boolean, captain: boolean, wk: boolean
+    const players = [
+      { name:'Nitin Verma',         photo:B+'1727118736699_Ko1GqHoRE5eD.jpg',  bat:'Hard Hitter',   bowl:null,         pro:true,  captain:true, wk:true  },
+      { name:'Abhii Rana',          photo:B+'1735969817590_nMeYu1lFqCvq.jpg',  bat:'Classicist',    bowl:'Aspirant'   },
+      { name:'Abhishek Tiwari',     photo:B+'1735477198133_yfkC3RXSDTlD.jpeg', bat:'Classicist',    bowl:'Aspirant'   },
+      { name:'Aditya Kanojia',      photo:DP                                                                          },
+      { name:'Aditya Kumar',        photo:B+'1732546691783_05SamexgWMIr.jpg',  bat:'Hard Hitter',   bowl:'Wildcard'   },
+      { name:'Ajay P',              photo:B+'1751349271472_CmL5EHtu40xx.jpg',  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Akhilesh',            photo:B+'1732583220155_znsWxKsk4drM.jpg',  bat:'Hard Hitter',   bowl:'Economist'  },
+      { name:'Akshat',              photo:DP                                                                          },
+      { name:'Aman',                photo:DP                                                                          },
+      { name:'Aman Awasthi',        photo:B+'1658991982509_zdotZQXNGQHi.jpg',  bat:'Hard Hitter',   bowl:null         },
+      { name:'Aman Gautam',         photo:B+'1661583251283_jHZ8NBE88abN.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Amit Dixit',          photo:B+'1702954770242_MzYOq6tzSWqi.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Amit Kharka',         photo:B+'1615698239300_yHUMjycik2vg.jpg',  bat:'Accumulator',   bowl:'Wildcard',  pro:true   },
+      { name:'Amul',                photo:DP                                                                          },
+      { name:'Ansu Kumar',          photo:B+'1756348879528_MnEDUnE6aCnf.jpg',  bat:'Destroyer',     bowl:'Wildcard',  pro:true   },
+      { name:'Anurag Singh',        photo:B+'1721302157019_lkPIzQ57gPQl.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Arjun Dubey',         photo:B+'1731838657078_ByDja6d4jCt2.jpg',  bat:'Accumulator',   bowl:'Economist', pro:true   },
+      { name:'Ashish',              photo:B+'1768105664631_xNWDPZNeFPTE.jpeg', bat:'Hard Hitter',   bowl:'Wildcard'   },
+      { name:'Ashutosh',            photo:DP                                                                          },
+      { name:'Ashutosh Gupta',      photo:DP,                                  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Asmit Yadav',         photo:B+'1735197091857_jKagRkrP65WM.jpeg', bat:'Destroyer',     bowl:null         },
+      { name:'Atendra Kumar',       photo:B+'1742035510387_gFddqN9usv6O.jpg',  bat:null,            bowl:'Aspirant'   },
+      { name:'Atul Chand',          photo:DP,                                  bat:'Steady Batter', bowl:null         },
+      { name:'Atul Rawat',          photo:B+'1753181032681_I9XXsI0HPkjP.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Avinash',             photo:B+'1697765545418_IAi3WaBaTDvw.jpg',  bat:'Classicist',    bowl:'Wildcard'   },
+      { name:'Azeem Shaikh',        photo:B+'1737723761683_N7wh8R9bz2It.jpg',  bat:null,            bowl:null         },
+      { name:'Bhanu Mishra',        photo:B+'1767500621677_VEu62T2H5blQ.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Bhupati Yadav',       photo:B+'1731849963478_DSJ9rPo5QVnv.jpg',  bat:'Hard Hitter',   bowl:null         },
+      { name:'Devansh Rai',         photo:DP,                                  bat:'Accumulator',   bowl:null         },
+      { name:'Dheerendra',          photo:B+'1741002829754_EAlO2ceViftB.jpg',  bat:'Accumulator',   bowl:null         },
+      { name:'Durgesh Verma',       photo:B+'1726657893815_eFT1JBstpMP7.jpeg', bat:null,            bowl:null         },
+      { name:'Feroz',               photo:DP                                                                          },
+      { name:'Gaurav',              photo:DP                                                                          },
+      { name:'Gaurav Nagar',        photo:DP,                                  bat:'Classicist',    bowl:null         },
+      { name:'Govind Pandey',       photo:B+'1716920125005_0fTodIZYynEp.jpg',  bat:'Hard Hitter',   bowl:'Aspirant'   },
+      { name:'Gulshan Verma',       photo:B+'1684252022331_YaGo4uhWbVLd.jpeg', bat:null,            bowl:null         },
+      { name:'GURU JI',             photo:B+'1766212594020_AAARpzdVwApS.jpg',  bat:'Hard Hitter',   bowl:'Aspirant'   },
+      { name:'Himanshu',            photo:DP,                                  bat:'Steady Batter', bowl:'Aspirant'   },
+      { name:'Himanshu Singh',      photo:B+'1739811050514_FmXVj3HxQxIJ.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Himanshu Srivastava', photo:B+'1759814493983_cpxZnWtJDgOF.jpg',  bat:'Accumulator',   bowl:'Wildcard'   },
+      { name:'Javed',               photo:B+'1770558363570_Ec55CH9eAUeF.jpg',  bat:'Hard Hitter',   bowl:null,        pro:true   },
+      { name:'Kartikey Shukla',     photo:B+'1685808170247_kRvgBMTktS2k.jpg',  bat:'Hard Hitter',   bowl:'Aspirant',  pro:true   },
+      { name:'Keshav',              photo:DP                                                                          },
+      { name:'Krishna Agarwal',     photo:B+'1774669421025_K0Gb9niL9LRt.jpg',  bat:'Hard Hitter',   bowl:'Wildcard',  pro:true   },
+      { name:'Kuldeep Singh',       photo:B+'1743824564611_FLdZIUv2pKR2.jpg',  bat:'Accumulator',   bowl:'Wildcard'   },
+      { name:'Lavi Singh',          photo:B+'1732477704678_TWAl8ssVVXt3.jpg',  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Manish',              photo:B+'1761028209938_lTkfvHLRy5SQ.jpeg', bat:'Destroyer',     bowl:'Wildcard'   },
+      { name:'Manish Yadav',        photo:DP                                                                          },
+      { name:'Manoj Yadav',         photo:DP                                                                          },
+      { name:'Mohit Tripathi',      photo:DP                                                                          },
+      { name:'Mukesh',              photo:DP                                                                          },
+      { name:'Mukul',               photo:DP                                                                          },
+      { name:'Nadeem Siddiqui',     photo:B+'1639613833959_E3TBJ2zgkm2D.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Nikhil Sharma',       photo:B+'1709993314074_cjrGrzJhi6Bx.jpg',  bat:'Hard Hitter',   bowl:'Wildcard',  pro:true   },
+      { name:'Nishant',             photo:DP                                                                          },
+      { name:'Pankaj Verma',        photo:B+'1740473177365_Jcm7CNL1yRMk.jpeg', bat:'Hard Hitter',   bowl:'Aspirant'   },
+      { name:'Parth',               photo:B+'1740664956334_Uepkd0LUqm1k.jpeg', bat:null,            bowl:null         },
+      { name:'Parth Mishra',        photo:B+'1751009854357_qe5KptWXM4zh.jpeg', bat:null,            bowl:null         },
+      { name:'Pramod',              photo:DP,                                  bat:'Classicist',    bowl:null         },
+      { name:'Prashant Vaish',      photo:B+'1768711072818_3K7a7j5DZ66Q.jpeg', bat:'Hard Hitter',   bowl:'Wildcard',  pro:true   },
+      { name:'Prateek Sahu',        photo:B+'1758342693974_zCNrQxuIBgiV.jpg',  bat:'Classicist',    bowl:'Economist', pro:true   },
+      { name:'Pratham',             photo:B+'1735045542088_G7E8xzeGpBC8.jpg',  bat:'Destroyer',     bowl:'Wildcard',  pro:true   },
+      { name:'Pravesh Shrivastava', photo:DP                                                                          },
+      { name:'Priyanshu Yadav',     photo:B+'1762664389558_9i7vWeNYnrsN.jpg',  bat:'Destroyer',     bowl:'Wildcard'   },
+      { name:'Pushpank Khare',      photo:B+'1704613571281_OZ1s8H9khmCc.jpg',  bat:null,            bowl:null         },
+      { name:'Rahul Katiyar',       photo:B+'1766903213474_bR4LHB4XJiLU.jpg',  bat:null,            bowl:null         },
+      { name:'Rajnish',             photo:B+'1746260301644_a1RvzG5q3tb1.jpg',  bat:'Hard Hitter',   bowl:null,        pro:true   },
+      { name:'Ravi',                photo:DP                                                                          },
+      { name:'Ravi Singh',          photo:DP                                                                          },
+      { name:'Ravi Srivastava',     photo:B+'1744434308364_IgHkX9wSttmh.jpg',  bat:'Steady Batter', bowl:null         },
+      { name:'Ritesh Yaduvanshi',   photo:B+'1740638172120_j9nkUL3mNRot.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Rohit',               photo:B+'1746330603855_0HVs1JGfzNTx.jpeg', bat:null,            bowl:null         },
+      { name:'Rohit Kumar',         photo:DP                                                                          },
+      { name:'Rohit Jaiswal',       photo:B+'1724698018991_Y6jOhUaPz7a3.jpeg', bat:'Accumulator',   bowl:'Wildcard',  pro:true   },
+      { name:'Rohit Mishra',        photo:B+'1747564463255_oIdy2HKKDWLT.jpeg', bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Rohit Puri',          photo:B+'1739792805029_HU1bW5RStEAs.jpg',  bat:'Destroyer',     bowl:'Wildcard'   },
+      { name:'Rohit Yadav',         photo:DP                                                                          },
+      { name:'Sachin',              photo:B+'1740229110876_voa8t5vTtlyk.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Sandeep Singh',       photo:B+'1729419057986_w50jpwSwE6dd.jpeg', bat:'Destroyer',     bowl:'Economist', pro:true   },
+      { name:'Santosh',             photo:DP                                                                          },
+      { name:'Sarvesh',             photo:DP                                                                          },
+      { name:'Satish Tripathi',     photo:DP                                                                          },
+      { name:'Satyam Tripathi',     photo:B+'1707113235762_uMmzjPgPYddA.jpg',  bat:null,            bowl:null         },
+      { name:'Saurbh Bhaiya',       photo:B+'1735140935487_qCi0MQIBZBhf.jpeg', bat:'Destroyer',     bowl:'Aspirant',  pro:true   },
+      { name:'Shadab Lala',         photo:B+'1745749463875_cKRGdZTd2vb6.jpg',  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Shiv Tivari',         photo:DP                                                                          },
+      { name:'Shiva Mishra',        photo:B+'1747022145288_Jfts2hRZGXDw.jpeg', bat:null,            bowl:null         },
+      { name:'Shivanshu Singh',     photo:B+'1771727889565_rXuMd7v1Evxs.jpg',  bat:null,            bowl:null         },
+      { name:'Shresth',             photo:B+'1748344762490_OMPnFRVWHs57.jpeg', bat:'Accumulator',   bowl:null         },
+      { name:'Siddhant',            photo:DP                                                                          },
+      { name:'Sparsh',              photo:DP                                                                          },
+      { name:'Suhail Sailani',      photo:B+'1744447606132_rxnJ4w90JTjQ.jpg',  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Sujeet Kumar',        photo:B+'1757217462849_v0fx7dckPQPr.jpg',  bat:'Hard Hitter',   bowl:null,        pro:true   },
+      { name:'Sumit Singh',         photo:B+'1766677410560_Oky0H1VjJSrK.jpg',  bat:'Accumulator',   bowl:'Economist'  },
+      { name:'Suraj Kumar',         photo:DP                                                                          },
+      { name:'Suraj Rawat',         photo:DP                                                                          },
+      { name:'Surya Prakash Singh', photo:DP,                                  bat:null,            bowl:'Aspirant'   },
+      { name:'Tarun Gaharwal',      photo:B+'1742023149642_BuvAZKxk5lIp.jpg',  bat:'Destroyer',     bowl:'Aspirant'   },
+      { name:'Tauseef',             photo:B+'1748184503101_7w6WGu3J8vaP.jpg',  bat:'Classicist',    bowl:'Aspirant'   },
+      { name:'Utkarsh Gupta',       photo:B+'1748023987514_WefmCEocDEDe.jpg',  bat:'Accumulator',   bowl:'Aspirant'   },
+      { name:'Utkarsh Pandey',      photo:B+'1774168097654_SJtTUrAsAtSQ.jpg',  bat:'Hard Hitter',   bowl:'Aspirant'   },
+      { name:'Utkarsh Verma',       photo:B+'1762342113026_rkEjdi3kqLXJ.jpg',  bat:'Destroyer',     bowl:'Wildcard',  pro:true   },
+      { name:'Varun Pratap Singh',  photo:B+'1766975643436_cbHxLViBRqdB.jpg',  bat:'Hard Hitter',   bowl:'Wildcard',  pro:true   },
+      { name:'Varun Ringani',       photo:B+'1766838243813_JM8JAUAZBGbX.jpg',  bat:'Hard Hitter',   bowl:'Wildcard'   },
+      { name:'Vipin Shukla',        photo:B+'1741581877443_di7U2YsgwYmf.jpg',  bat:null,            bowl:null         },
+      { name:'VISHAL',              photo:B+'1746806373635_WxTeUiTSDztr.jpg',  bat:null,            bowl:'Aspirant'   },
+      { name:'Vishal Singh',        photo:DP                                                                          },
+      { name:'Vishesh',             photo:B+'1752165869449_jDtxScbkc22o.jpg',  bat:'Hard Hitter',   bowl:'Aspirant'   },
+      { name:'Yash Shukla',         photo:DP,                                  bat:'Classicist',    bowl:null         },
+      { name:'Zeeshan Shafique',    photo:B+'1645066130596_vTTfgXizE00R.jpg',  bat:'Hard Hitter',   bowl:'Wildcard',  pro:true   },
+    ];
+
+    const GRADIENTS = [
+      'linear-gradient(135deg,#ffd700,#ff8c00)',
+      'linear-gradient(135deg,#00ff88,#00aaaa)',
+      'linear-gradient(135deg,#0066ff,#003399)',
+      'linear-gradient(135deg,#b469ff,#6600cc)',
+      'linear-gradient(135deg,#ff4d88,#cc0055)',
+      'linear-gradient(135deg,#00d4ff,#0066cc)',
+      'linear-gradient(135deg,#ff8c00,#cc5500)',
+      'linear-gradient(135deg,#00ff88,#0066ff)',
+      'linear-gradient(135deg,#ff6b35,#cc3300)',
+      'linear-gradient(135deg,#ffd700,#aa8800)',
+    ];
+
+    function initials(name) {
+      return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    }
+
+    function getType(p) {
+      const meaningful = p.bowl === 'Wildcard' || p.bowl === 'Economist';
+      if (p.bat && meaningful) return 'all-rounder';
+      if (!p.bat && meaningful) return 'bowl';
+      return 'bat';
+    }
+
+    function getBadges(p) {
+      const type = getType(p);
+      const bs = [];
+      if (type === 'all-rounder') { bs.push('all'); bs.push('bowl'); }
+      else if (type === 'bowl') bs.push('bowl');
+      else if (p.bat) bs.push('bat');
+      if (p.wk) bs.push('wk');
+      if (p.pro) bs.push('pro');
+      if (p.captain) bs.push('cap');
+      return bs;
+    }
+
+    function getRole(p) {
+      const parts = [];
+      if (p.bat) parts.push(p.bat);
+      if (p.bowl && p.bowl !== 'Aspirant') parts.push(p.bowl + ' Bowler');
+      if (!parts.length) parts.push('Cricket Lovers');
+      return parts.join(' · ');
+    }
+
+    function getStats(p) {
+      const stats = [];
+      if (p.bat) stats.push({ label:'Batting', val:p.bat });
+      if (p.bowl) stats.push({ label:'Bowling', val:p.bowl });
+      const roles = [];
+      if (p.captain) roles.push('Captain');
+      if (p.wk) roles.push('WK');
+      if (p.pro) roles.push('Pro');
+      if (roles.length) stats.push({ label:'Status', val:roles.join(', ') });
+      return stats;
+    }
+
+    const badgeLabels = {
+      bat:  ['badge-bat',  'BAT'],
+      bowl: ['badge-bowl', 'BOWL'],
+      all:  ['badge-all',  'ALL'],
+      wk:   ['badge-wk',   'WK'],
+      pro:  ['badge-pro',  'PRO'],
+      cap:  ['badge-cap',  '⭐ CAPTAIN'],
+    };
+
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    function renderCards() {
+      const grid = document.getElementById('team-grid');
+      grid.innerHTML = '';
+      let list = players;
+      if (activeFilter === 'pro') list = list.filter(p => p.pro);
+      else if (activeFilter !== 'all') list = list.filter(p => getType(p) === activeFilter);
+      if (searchQuery) list = list.filter(p => p.name.toLowerCase().includes(searchQuery));
+
+      list.forEach((p, i) => {
+        const type = getType(p);
+        const badges = getBadges(p);
+        const stats = getStats(p);
+        const role = getRole(p);
+        const gradient = GRADIENTS[i % GRADIENTS.length];
+        const ini = initials(p.name);
+
+        const badgesHTML = badges.map(b => {
+          const [cls, label] = badgeLabels[b];
+          return `<span class="badge ${cls}">${label}</span>`;
+        }).join('');
+
+        const statsHTML = stats.map(s =>
+          `<div class="back-stat-row">
+            <span class="back-stat-label">${s.label}</span>
+            <span class="back-stat-val">${s.val}</span>
+          </div>`
+        ).join('') || `<div class="back-stat-row"><span class="back-stat-label">Club</span><span class="back-stat-val">Cricket Lovers</span></div>`;
+
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="glow-ring"></div>
+              <div class="avatar">
+                <div class="avatar-inner" style="background:${gradient}">
+                  ${ini}
+                  <img src="${p.photo}" alt="${p.name}" />
+                </div>
+              </div>
+              <div class="player-name">${p.name}</div>
+              <div class="player-role">${role}</div>
+              <div class="player-badges">${badgesHTML}</div>
+            </div>
+            <div class="card-back">
+              <h3>${p.name}</h3>
+              <div class="back-stats">${statsHTML}</div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      if (!list.length) {
+        grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;padding:40px">No players found.</p>';
+      }
+    }
+
+    renderCards();
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderCards();
+      });
+    });
+
+    // Search
+    document.getElementById('player-search').addEventListener('input', e => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderCards();
+    });
+
+    // ─── Gallery items ─────────────────────────────────────────────────────────
+    const galleryItems = [
+      { icon: '🏏', text: 'Match Day Intensity' },
+      { icon: '🌟', text: 'Championship Moments' },
+      { icon: '🤝', text: 'Team Brotherhood' },
+      { icon: '🔥', text: 'Explosive Batting' },
+      { icon: '🌀', text: 'Lethal Bowling' },
+      { icon: '🧤', text: 'Safe Hands' },
+      { icon: '🏆', text: 'Victory Celebrations' },
+      { icon: '💪', text: 'Training Sessions' },
+      { icon: '🎯', text: 'Wicket Moments' },
+      { icon: '⚡', text: 'Fielding Excellence' },
+    ];
+
+    const track = document.getElementById('gallery-track');
+    const doubled = [...galleryItems, ...galleryItems];
+    doubled.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'gallery-item';
+      el.innerHTML = `
+        <div class="gallery-overlay"></div>
+        <div class="gallery-icon">${item.icon}</div>
+        <div class="gallery-text">${item.text}</div>
+      `;
+      track.appendChild(el);
+    });
+
+    // ─── Counter animation ─────────────────────────────────────────────────────
+    function animateCount(el, target) {
+      let start = 0;
+      const duration = 1800;
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target) + (progress < 1 ? '' : '+');
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    const countEls = document.querySelectorAll('[data-count]');
+    let counted = false;
+    const countObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !counted) {
+        counted = true;
+        countEls.forEach(el => animateCount(el, parseInt(el.dataset.count)));
+      }
+    });
+    if (countEls.length) countObserver.observe(countEls[0]);
+
+    // ─── Scroll reveal ─────────────────────────────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => revealObserver.observe(el));
+  </script>
+
+</body>
+</html>
