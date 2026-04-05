@@ -10,17 +10,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
-      --primary: #00ff88;
-      --secondary: #0066ff;
-      --accent: #ff6b35;
-      --gold: #ffd700;
-      --dark: #020b18;
-      --dark2: #041123;
-      --dark3: #061830;
+      --primary: #FF9933;
+      --secondary: #138808;
+      --accent: #000080;
+      --gold: #FF9933;
+      --dark: #06050A;
+      --dark2: #0D0B14;
+      --dark3: #14111E;
       --glass: rgba(255,255,255,0.04);
-      --glass-border: rgba(255,255,255,0.1);
-      --text: #e8f4fd;
-      --text-dim: rgba(232,244,253,0.6);
+      --glass-border: rgba(255,255,255,0.09);
+      --text: #F9F6F0;
+      --text-dim: rgba(249,246,240,0.58);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -65,7 +65,17 @@
 
     nav.scrolled {
       padding: 10px 48px;
-      background: rgba(2,11,24,0.95);
+      background: rgba(6,5,10,0.96);
+    }
+
+    /* Tricolor bottom border on nav */
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #FF9933 33.3%, #ffffff 33.3% 66.6%, #138808 66.6%);
+      opacity: 0.7;
     }
 
     .nav-logo {
@@ -109,7 +119,7 @@
     .nav-links a:hover::after { width: 100%; }
 
     .nav-cta {
-      background: linear-gradient(135deg, var(--primary), #00cc66);
+      background: linear-gradient(135deg, var(--primary), #E67E00);
       color: #000 !important;
       padding: 8px 20px;
       border-radius: 30px;
@@ -134,9 +144,22 @@
     .hero-bg-gradient {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,102,255,0.15) 0%, transparent 70%),
-                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,255,136,0.08) 0%, transparent 60%);
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 40%, rgba(255,153,51,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(19,136,8,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(0,0,128,0.10) 0%, transparent 60%);
       z-index: 0;
+    }
+
+    /* Tricolor glow bar at hero bottom */
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FF9933 33.3%, #ffffff 33.3% 66.6%, #138808 66.6%);
+      z-index: 3;
+      box-shadow: 0 0 20px rgba(255,153,51,0.5);
     }
 
     .hero-content {
@@ -148,8 +171,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0,255,136,0.1);
-      border: 1px solid rgba(0,255,136,0.3);
+      background: rgba(255,153,51,0.1);
+      border: 1px solid rgba(255,153,51,0.3);
       border-radius: 30px;
       padding: 6px 18px;
       font-size: .8rem;
@@ -180,7 +203,7 @@
 
     .hero-title .line1 {
       display: block;
-      background: linear-gradient(135deg, #fff 0%, #aad4f5 100%);
+      background: linear-gradient(135deg, #fff 0%, #FFE0B2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -214,7 +237,7 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), #00aaff);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: #000;
       border: none;
       padding: 14px 36px;
@@ -225,12 +248,12 @@
       text-decoration: none;
       letter-spacing: 1px;
       transition: transform .3s, box-shadow .3s;
-      box-shadow: 0 0 30px rgba(0,255,136,0.3);
+      box-shadow: 0 0 30px rgba(255,153,51,0.3);
     }
 
     .btn-primary:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 0 50px rgba(0,255,136,0.5);
+      box-shadow: 0 0 50px rgba(255,153,51,0.5);
     }
 
     .btn-ghost {
@@ -405,7 +428,7 @@
       border: 3px solid rgba(255,255,255,0.1);
       position: relative;
       margin: auto;
-      box-shadow: 0 0 80px rgba(0,255,136,0.15), 0 0 40px rgba(0,255,136,0.1) inset;
+      box-shadow: 0 0 80px rgba(255,153,51,0.15), 0 0 40px rgba(255,153,51,0.1) inset;
       animation: fieldPulse 4s ease-in-out infinite;
     }
 
@@ -529,8 +552,8 @@
     }
 
     .tag {
-      background: rgba(0,255,136,0.08);
-      border: 1px solid rgba(0,255,136,0.2);
+      background: rgba(255,153,51,0.08);
+      border: 1px solid rgba(255,153,51,0.2);
       color: var(--primary);
       padding: 6px 16px;
       border-radius: 20px;
@@ -568,8 +591,8 @@
 
     .team-search input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(0,255,136,0.15);
-      background: rgba(0,255,136,0.04);
+      box-shadow: 0 0 20px rgba(255,153,51,0.15);
+      background: rgba(255,153,51,0.04);
     }
 
     .team-filter {
@@ -594,7 +617,7 @@
     }
 
     .filter-btn.active, .filter-btn:hover {
-      background: rgba(0,255,136,0.1);
+      background: rgba(255,153,51,0.1);
       border-color: var(--primary);
       color: var(--primary);
     }
@@ -630,7 +653,7 @@
     }
 
     .view-btn.active {
-      background: rgba(0,255,136,0.1);
+      background: rgba(255,153,51,0.1);
       border-color: var(--primary);
       color: var(--primary);
     }
@@ -675,8 +698,8 @@
     }
 
     .list-item:hover {
-      border-color: rgba(0,255,136,0.25);
-      background: rgba(0,255,136,0.04);
+      border-color: rgba(255,153,51,0.25);
+      background: rgba(255,153,51,0.04);
       transform: translateX(4px);
     }
 
@@ -736,7 +759,7 @@
 
     .list-type.bat   { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.25); }
     .list-type.bowl  { background: rgba(255,107,53,0.1); color: #ff8c42;  border: 1px solid rgba(255,107,53,0.25); }
-    .list-type.all-rounder { background: rgba(0,255,136,0.1); color: var(--primary); border: 1px solid rgba(0,255,136,0.25); }
+    .list-type.all-rounder { background: rgba(255,153,51,0.1); color: var(--primary); border: 1px solid rgba(255,153,51,0.25); }
 
     @media (min-width: 600px) { .list-role { display: block; } }
 
@@ -769,13 +792,13 @@
     }
 
     .page-btn:hover:not(:disabled) {
-      border-color: rgba(0,255,136,0.4);
+      border-color: rgba(255,153,51,0.4);
       color: var(--primary);
-      background: rgba(0,255,136,0.06);
+      background: rgba(255,153,51,0.06);
     }
 
     .page-btn.active {
-      background: rgba(0,255,136,0.15);
+      background: rgba(255,153,51,0.15);
       border-color: var(--primary);
       color: var(--primary);
       font-weight: 700;
@@ -836,14 +859,14 @@
     }
 
     .player-card:hover .card-front {
-      box-shadow: 0 20px 60px rgba(0,255,136,0.15);
+      box-shadow: 0 20px 60px rgba(255,153,51,0.15);
     }
 
     .card-front .glow-ring {
       position: absolute;
       top: -1px; left: -1px; right: -1px; bottom: -1px;
       border-radius: 20px;
-      background: linear-gradient(135deg, transparent 30%, rgba(0,255,136,0.2) 100%);
+      background: linear-gradient(135deg, transparent 30%, rgba(255,153,51,0.2) 100%);
       opacity: 0;
       transition: opacity .3s;
     }
@@ -937,14 +960,14 @@
 
     .badge-bat { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
     .badge-bowl { background: rgba(255,107,53,0.15); color: #ff8c42; border: 1px solid rgba(255,107,53,0.3); }
-    .badge-all { background: rgba(0,255,136,0.1); color: var(--primary); border: 1px solid rgba(0,255,136,0.3); }
-    .badge-wk { background: rgba(0,102,255,0.15); color: #4d9eff; border: 1px solid rgba(0,102,255,0.3); }
+    .badge-all { background: rgba(255,153,51,0.1); color: var(--primary); border: 1px solid rgba(255,153,51,0.3); }
+    .badge-wk { background: rgba(0,0,128,0.2); color: #6677FF; border: 1px solid rgba(0,0,128,0.4); }
     .badge-pro { background: rgba(138,43,226,0.15); color: #b469ff; border: 1px solid rgba(138,43,226,0.3); }
     .badge-cap { background: rgba(255,215,0,0.2); color: var(--gold); border: 1px solid var(--gold); }
 
     .card-back {
-      background: linear-gradient(145deg, #061830, #041123);
-      border: 1px solid rgba(0,255,136,0.2);
+      background: linear-gradient(145deg, #14111E, #0D0B14);
+      border: 1px solid rgba(255,153,51,0.2);
       transform: rotateY(180deg);
       display: flex;
       flex-direction: column;
@@ -1038,8 +1061,8 @@
 
     .highlight-card:hover {
       transform: translateY(-8px);
-      border-color: rgba(0,255,136,0.2);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,255,136,0.08);
+      border-color: rgba(255,153,51,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(255,153,51,0.08);
     }
 
     .highlight-card:hover::before { opacity: 1; }
@@ -1077,15 +1100,15 @@
       position: absolute;
       top: -200px; right: -200px;
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,102,255,0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(19,136,8,0.1) 0%, transparent 70%);
       pointer-events: none;
     }
 
     .captain-card {
       max-width: 900px;
       margin: 0 auto;
-      background: linear-gradient(135deg, rgba(0,102,255,0.1), rgba(0,255,136,0.05));
-      border: 1px solid rgba(0,102,255,0.3);
+      background: linear-gradient(135deg, rgba(255,153,51,0.1), rgba(19,136,8,0.05));
+      border: 1px solid rgba(255,153,51,0.3);
       border-radius: 32px;
       padding: 56px;
       display: grid;
@@ -1101,7 +1124,7 @@
       position: absolute;
       top: -100px; right: -100px;
       width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(0,255,136,0.05) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,153,51,0.05) 0%, transparent 70%);
     }
 
     .captain-avatar {
@@ -1117,7 +1140,7 @@
       color: #000;
       position: relative;
       flex-shrink: 0;
-      box-shadow: 0 0 60px rgba(0,255,136,0.3);
+      box-shadow: 0 0 60px rgba(255,153,51,0.3);
     }
 
     .captain-avatar::after {
@@ -1225,7 +1248,7 @@
     }
 
     .gallery-item:hover {
-      border-color: rgba(0,255,136,0.3);
+      border-color: rgba(255,153,51,0.3);
       transform: scale(1.02);
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
@@ -1241,17 +1264,111 @@
     .gallery-item .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(0,102,255,0.2), rgba(0,255,136,0.1));
+      background: linear-gradient(135deg, rgba(255,153,51,0.18), rgba(19,136,8,0.12));
       opacity: 0;
       transition: opacity .3s;
     }
 
     .gallery-item:hover .gallery-overlay { opacity: 1; }
 
+    /* ─── Photo Showcase ─── */
+    .photo-showcase {
+      max-width: 1200px;
+      margin: 0 auto 8px;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+    }
+
+    .photo-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      background: var(--dark3);
+    }
+
+    .photo-card--wide { aspect-ratio: 16/10; }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+
+    .photo-card:hover img { transform: scale(1.05); }
+
+    .photo-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(6,5,10,0.92) 0%, rgba(6,5,10,0.3) 50%, transparent 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity .4s;
+    }
+
+    .photo-card:hover .photo-card__overlay { opacity: 1; }
+
+    .photo-tag {
+      display: inline-block;
+      background: rgba(255,153,51,0.2);
+      border: 1px solid rgba(255,153,51,0.5);
+      color: var(--primary);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .photo-card__label h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .photo-card__label p {
+      font-size: .82rem;
+      color: rgba(249,246,240,0.75);
+      line-height: 1.5;
+    }
+
+    /* Tricolor border shimmer on hover */
+    .photo-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      background: linear-gradient(var(--dark3), var(--dark3)) padding-box,
+                  linear-gradient(135deg, #FF9933, #ffffff, #138808) border-box;
+      opacity: 0;
+      transition: opacity .4s;
+      pointer-events: none;
+    }
+
+    .photo-card:hover::after { opacity: 1; }
+
+    @media (max-width: 900px) {
+      .photo-showcase { grid-template-columns: 1fr; }
+      .photo-card--wide { aspect-ratio: 4/3; }
+    }
+
     /* ─── CTA ─── */
     #cta {
       padding: 120px 48px;
-      background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,102,255,0.08) 100%);
+      background: linear-gradient(135deg, rgba(255,153,51,0.07) 0%, rgba(19,136,8,0.07) 100%);
       border-top: 1px solid var(--glass-border);
       border-bottom: 1px solid var(--glass-border);
       text-align: center;
@@ -1382,8 +1499,8 @@
     }
 
     @keyframes fieldPulse {
-      0%, 100% { box-shadow: 0 0 80px rgba(0,255,136,0.15), 0 0 40px rgba(0,255,136,0.1) inset; }
-      50% { box-shadow: 0 0 120px rgba(0,255,136,0.25), 0 0 60px rgba(0,255,136,0.15) inset; }
+      0%, 100% { box-shadow: 0 0 80px rgba(255,153,51,0.15), 0 0 40px rgba(255,153,51,0.1) inset; }
+      50% { box-shadow: 0 0 120px rgba(255,153,51,0.25), 0 0 60px rgba(255,153,51,0.15) inset; }
     }
 
     @keyframes floatCard {
@@ -1526,36 +1643,42 @@
     </div>
   </section>
 
-  <!-- Team Section -->
-  <section id="team">
+  <!-- Gallery -->
+  <section id="gallery">
     <div class="section-header reveal">
-      <div class="section-tag">The Squad</div>
-      <h2 class="section-title">Meet Our <span>Warriors</span></h2>
-      <p class="section-desc">A diverse roster of batting maestros, bowling wizards, and complete all-rounders.</p>
+      <div class="section-tag">Moments</div>
+      <h2 class="section-title">On The <span>Field</span></h2>
+      <p class="section-desc">Real moments from the ground — tournaments, brotherhood, and the love of the game.</p>
     </div>
 
-    <div class="team-search reveal">
-      <input type="text" id="player-search" placeholder="🔍  Search player..." autocomplete="off" />
-    </div>
-
-    <div class="team-filter reveal">
-      <button class="filter-btn active" data-filter="all">All Players</button>
-      <button class="filter-btn" data-filter="bat">Batters</button>
-      <button class="filter-btn" data-filter="bowl">Bowlers</button>
-      <button class="filter-btn" data-filter="all-rounder">All-Rounders</button>
-      <button class="filter-btn" data-filter="pro">Pro</button>
-    </div>
-
-    <div class="team-toolbar reveal">
-      <div class="player-count" id="player-count"></div>
-      <div class="view-toggle">
-        <button class="view-btn active" id="view-grid" title="Card view">⊞</button>
-        <button class="view-btn" id="view-list" title="List view">☰</button>
+    <!-- Featured Photos -->
+    <div class="photo-showcase reveal">
+      <div class="photo-card photo-card--wide">
+        <img src="i1.jpeg" alt="Cricket Lovers squad at APL tournament" />
+        <div class="photo-card__overlay">
+          <div class="photo-card__label">
+            <span class="photo-tag">🏆 APL Tournament</span>
+            <h3>The Full Squad</h3>
+            <p>Cricket Lovers lined up and ready to dominate at the APL cricket tournament, Lucknow.</p>
+          </div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="i2.jpeg" alt="Cricket Lovers team selfie" />
+        <div class="photo-card__overlay">
+          <div class="photo-card__label">
+            <span class="photo-tag">🤝 Brotherhood</span>
+            <h3>Together We Win</h3>
+            <p>The bond that makes Cricket Lovers more than just a team.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="team-grid" id="team-grid"></div>
-    <div class="pagination" id="pagination"></div>
+    <!-- Scrolling Marquee -->
+    <div class="gallery-marquee" style="margin-top:40px">
+      <div class="gallery-track" id="gallery-track"></div>
+    </div>
   </section>
 
   <!-- Captain Spotlight -->
@@ -1589,6 +1712,38 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team">
+    <div class="section-header reveal">
+      <div class="section-tag">The Squad</div>
+      <h2 class="section-title">Meet Our <span>Warriors</span></h2>
+      <p class="section-desc">A diverse roster of batting maestros, bowling wizards, and complete all-rounders.</p>
+    </div>
+
+    <div class="team-search reveal">
+      <input type="text" id="player-search" placeholder="🔍  Search player..." autocomplete="off" />
+    </div>
+
+    <div class="team-filter reveal">
+      <button class="filter-btn active" data-filter="all">All Players</button>
+      <button class="filter-btn" data-filter="bat">Batters</button>
+      <button class="filter-btn" data-filter="bowl">Bowlers</button>
+      <button class="filter-btn" data-filter="all-rounder">All-Rounders</button>
+      <button class="filter-btn" data-filter="pro">Pro</button>
+    </div>
+
+    <div class="team-toolbar reveal">
+      <div class="player-count" id="player-count"></div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="view-grid" title="Card view">⊞</button>
+        <button class="view-btn" id="view-list" title="List view">☰</button>
+      </div>
+    </div>
+
+    <div class="team-grid" id="team-grid"></div>
+    <div class="pagination" id="pagination"></div>
   </section>
 
   <!-- Highlights -->
@@ -1628,17 +1783,6 @@
         <h3>110+ Strong Squad</h3>
         <p>One of the largest cricket clubs in Lucknow, with 110+ registered members across all skill levels and playing styles.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- Gallery (Visual Cards) -->
-  <section id="gallery">
-    <div class="section-header reveal">
-      <div class="section-tag">Moments</div>
-      <h2 class="section-title">On The <span>Field</span></h2>
-    </div>
-    <div class="gallery-marquee">
-      <div class="gallery-track" id="gallery-track"></div>
     </div>
   </section>
 
@@ -1707,10 +1851,15 @@
       positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
 
       const t = Math.random();
-      if (t < 0.5) {
-        colors[i * 3] = 0; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 0.53;
+      if (t < 0.45) {
+        // saffron
+        colors[i * 3] = 1.0; colors[i * 3 + 1] = 0.6; colors[i * 3 + 2] = 0.2;
+      } else if (t < 0.8) {
+        // India green
+        colors[i * 3] = 0.07; colors[i * 3 + 1] = 0.53; colors[i * 3 + 2] = 0.03;
       } else {
-        colors[i * 3] = 0; colors[i * 3 + 1] = 0.4; colors[i * 3 + 2] = 1;
+        // Chakra navy blue
+        colors[i * 3] = 0.1; colors[i * 3 + 1] = 0.1; colors[i * 3 + 2] = 0.7;
       }
     }
 
@@ -1743,12 +1892,12 @@
     scene.add(ball);
 
     // Lights
-    const ambient = new THREE.AmbientLight(0x004466, 2);
+    const ambient = new THREE.AmbientLight(0x0a1a06, 2);
     scene.add(ambient);
-    const pointLight = new THREE.PointLight(0x00ff88, 3, 50);
+    const pointLight = new THREE.PointLight(0xFF9933, 3, 50);
     pointLight.position.set(10, 10, 10);
     scene.add(pointLight);
-    const pointLight2 = new THREE.PointLight(0x0066ff, 2, 50);
+    const pointLight2 = new THREE.PointLight(0x138808, 2, 50);
     pointLight2.position.set(-10, -5, 5);
     scene.add(pointLight2);
 
@@ -1904,16 +2053,16 @@
     ];
 
     const GRADIENTS = [
-      'linear-gradient(135deg,#ffd700,#ff8c00)',
-      'linear-gradient(135deg,#00ff88,#00aaaa)',
-      'linear-gradient(135deg,#0066ff,#003399)',
-      'linear-gradient(135deg,#b469ff,#6600cc)',
-      'linear-gradient(135deg,#ff4d88,#cc0055)',
-      'linear-gradient(135deg,#00d4ff,#0066cc)',
-      'linear-gradient(135deg,#ff8c00,#cc5500)',
-      'linear-gradient(135deg,#00ff88,#0066ff)',
-      'linear-gradient(135deg,#ff6b35,#cc3300)',
-      'linear-gradient(135deg,#ffd700,#aa8800)',
+      'linear-gradient(135deg,#FF9933,#E67E00)',  // saffron
+      'linear-gradient(135deg,#138808,#0A5C05)',  // India green
+      'linear-gradient(135deg,#000080,#0000CC)',  // Chakra navy
+      'linear-gradient(135deg,#FF9933,#138808)',  // saffron → green (tricolor)
+      'linear-gradient(135deg,#000080,#FF9933)',  // navy → saffron
+      'linear-gradient(135deg,#138808,#000080)',  // green → navy
+      'linear-gradient(135deg,#FF6600,#FF9933)',  // deep saffron
+      'linear-gradient(135deg,#004400,#138808)',  // deep green
+      'linear-gradient(135deg,#FF9933,#000080)',  // saffron → navy
+      'linear-gradient(135deg,#001A80,#0000CC)',  // deep navy
     ];
 
     function initials(name) {
@@ -2187,15 +2336,17 @@
 
     // ─── Gallery items ─────────────────────────────────────────────────────────
     const galleryItems = [
+      { photo: 'i1.jpeg', text: 'APL Tournament — Full Squad' },
       { icon: '🏏', text: 'Match Day Intensity' },
+      { photo: 'i2.jpeg', text: 'Team Brotherhood' },
       { icon: '🌟', text: 'Championship Moments' },
-      { icon: '🤝', text: 'Team Brotherhood' },
       { icon: '🔥', text: 'Explosive Batting' },
+      { photo: 'i1.jpeg', text: 'Cricket Lovers at APL' },
       { icon: '🌀', text: 'Lethal Bowling' },
       { icon: '🧤', text: 'Safe Hands' },
+      { photo: 'i2.jpeg', text: 'Squad Goals' },
       { icon: '🏆', text: 'Victory Celebrations' },
       { icon: '💪', text: 'Training Sessions' },
-      { icon: '🎯', text: 'Wicket Moments' },
       { icon: '⚡', text: 'Fielding Excellence' },
     ];
 
@@ -2204,11 +2355,19 @@
     doubled.forEach(item => {
       const el = document.createElement('div');
       el.className = 'gallery-item';
-      el.innerHTML = `
-        <div class="gallery-overlay"></div>
-        <div class="gallery-icon">${item.icon}</div>
-        <div class="gallery-text">${item.text}</div>
-      `;
+      if (item.photo) {
+        el.innerHTML = `
+          <div class="gallery-overlay"></div>
+          <img src="${item.photo}" alt="${item.text}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;" />
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(to top,rgba(6,5,10,0.85),transparent);font-size:.8rem;color:#fff;font-weight:600;z-index:2;">${item.text}</div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="gallery-overlay"></div>
+          <div class="gallery-icon">${item.icon}</div>
+          <div class="gallery-text">${item.text}</div>
+        `;
+      }
       track.appendChild(el);
     });
 
@@ -2279,8 +2438,8 @@
     }
 
     #music-prompt {
-      background: rgba(0,255,136,0.12);
-      border: 1px solid rgba(0,255,136,0.4);
+      background: rgba(255,153,51,0.12);
+      border: 1px solid rgba(255,153,51,0.4);
       color: var(--primary);
       font-size: .72rem;
       font-weight: 700;
@@ -2298,7 +2457,7 @@
       border-radius: 50%;
       background: rgba(4,17,35,0.85);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(0,255,136,0.35);
+      border: 1px solid rgba(255,153,51,0.35);
       color: var(--primary);
       cursor: pointer;
       display: flex;
@@ -2306,7 +2465,7 @@
       justify-content: center;
       pointer-events: all;
       transition: all .3s;
-      box-shadow: 0 0 20px rgba(0,255,136,0.2), 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 0 20px rgba(255,153,51,0.2), 0 4px 20px rgba(0,0,0,0.4);
       position: relative;
     }
 
@@ -2326,7 +2485,7 @@
 
     #music-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(0,255,136,0.35), 0 4px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 0 30px rgba(255,153,51,0.35), 0 4px 24px rgba(0,0,0,0.5);
     }
 
     #music-label {
